@@ -1,0 +1,28 @@
+# Ignore standard files and folders
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Log files
+logs/
+*.log
+
+# Virtual environment
+venv/
+.env
+*.env
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.iml
+
+# Ignore version control system files
+.git/
+.gitignore
+
+# Cache files
+.cache/
+*.swp
+.DS_Store
