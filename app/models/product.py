@@ -12,9 +12,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.db import Base
 from app.models.base_model import BaseModel
-from app.models.order import OrderItem
-from app.models.review import Review
-from app.models.wishlist import Wishlist
+
+# from app.models.order import OrderItem
+# from app.models.review import Review
+# from app.models.wishlist import Wishlist
 
 
 class Category(Base):
@@ -43,9 +44,9 @@ class Product(BaseModel):
     category: Mapped["Category"] = relationship(back_populates="products")
     options: Mapped[List["ProductOption"]] = relationship(back_populates="product")
     images: Mapped[List["ProductImage"]] = relationship(back_populates="product")
-    order_items: Mapped[List["OrderItem"]] = relationship(back_populates="product")
-    reviews: Mapped[List["Review"]] = relationship(back_populates="product")
-    wishlist: Mapped[List["Wishlist"]] = relationship(back_populates="product")
+    order_items: Mapped[List["OrderItem"]] = relationship(back_populates="product")  # type: ignore
+    reviews: Mapped[List["Review"]] = relationship(back_populates="product")  # type: ignore
+    wishlist: Mapped[List["Wishlist"]] = relationship(back_populates="product")  # type: ignore
 
 
 class ProductOption(Base):

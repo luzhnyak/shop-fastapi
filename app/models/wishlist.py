@@ -8,8 +8,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_model import BaseModel
-from app.models.product import Product
-from app.models.user import User
+
+# from app.models.product import Product
+# from app.models.user import User
 
 
 class Wishlist(BaseModel):
@@ -20,5 +21,5 @@ class Wishlist(BaseModel):
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    user: Mapped["User"] = relationship(back_populates="wishlist")
-    product: Mapped["Product"] = relationship(back_populates="wishlist")
+    user: Mapped["User"] = relationship(back_populates="wishlist")  # type: ignore
+    product: Mapped["Product"] = relationship(back_populates="wishlist")  # type: ignore

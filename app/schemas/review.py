@@ -14,9 +14,21 @@ class ReviewCreate(ReviewBase):
     pass
 
 
+class ReviewUpdate(ReviewBase):
+    rating: Optional[int]
+    comment: Optional[str]
+
+
 class ReviewRead(ReviewBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     user_id: int
     created_at: datetime
+
+
+class ReviewList(BaseModel):
+    items: List[ReviewRead]
+    total: int
+    page: int
+    per_page: int

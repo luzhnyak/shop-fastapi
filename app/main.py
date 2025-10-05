@@ -5,13 +5,12 @@ from logger import logger
 
 from app.core.config import settings
 from app.routers import healthcheck
-from app.routers import users
-from app.routers import companies
 from app.routers import auth
-from app.routers import membership
-from app.routers import quizzes
-from app.routers import quiz_result
-from app.routers import export_data
+from app.routers import users
+from app.routers import categories
+from app.routers import products
+from app.routers import carts
+from app.routers import orders
 
 
 app = FastAPI()
@@ -33,14 +32,13 @@ async def log_requests(request: Request, call_next):
     return response
 
 
+app.include_router(healthcheck.router)
 app.include_router(auth.router)
 app.include_router(users.router)
-app.include_router(companies.router)
-app.include_router(membership.router)
-app.include_router(healthcheck.router)
-app.include_router(quizzes.router)
-app.include_router(quiz_result.router)
-app.include_router(export_data.router)
+app.include_router(products.router)
+app.include_router(categories.router)
+app.include_router(orders.router)
+app.include_router(carts.router)
 
 
 if __name__ == "__main__":

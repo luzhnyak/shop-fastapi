@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Response
 import logging
 
-from app.schemas.user import SignInRequest, SignUpRequest, UserResponse
+from app.schemas.user import SignInRequest, SignUpRequest, UserRead
 from app.schemas.auth import Auth0Token, TokenResponse
 from app.services.auth import AuthService
 from app.utils.deps import get_auth_service, get_current_user
@@ -54,8 +54,8 @@ async def login(
     return result
 
 
-@router.get("/me", response_model=UserResponse)
-async def read_users_me(current_user: UserResponse = Depends(get_current_user)):
+@router.get("/me", response_model=UserRead)
+async def read_users_me(current_user: UserRead = Depends(get_current_user)):
     return current_user
 
 

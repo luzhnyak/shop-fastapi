@@ -12,7 +12,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_model import BaseModel
-from app.models.user import User
+
+# from app.models.user import User
 
 
 class CustomOrderStatus(enum.Enum):
@@ -36,4 +37,4 @@ class CustomOrder(BaseModel):
     )
     estimated_price: Mapped[Optional[float]] = mapped_column(Float)
 
-    user: Mapped["User"] = relationship(back_populates="custom_orders")
+    user: Mapped["User"] = relationship(back_populates="custom_orders")  # type: ignore

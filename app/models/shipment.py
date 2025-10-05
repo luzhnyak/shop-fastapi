@@ -15,7 +15,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship, declarative_base
 
 from app.db.db import Base
-from app.models.order import Order
+
+# from app.models.order import Order
 
 
 class ShipmentStatus(enum.Enum):
@@ -37,4 +38,4 @@ class Shipment(Base):
     shipped_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
     delivered_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
-    order: Mapped["Order"] = relationship(back_populates="shipment")
+    order: Mapped["Order"] = relationship(back_populates="shipment")  # type: ignore

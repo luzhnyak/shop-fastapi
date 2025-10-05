@@ -15,8 +15,9 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship, declarative_base
 
 from app.models.base_model import BaseModel
-from app.models.product import Product
-from app.models.user import User
+
+# from app.models.product import Product
+# from app.models.user import User
 
 
 class Review(BaseModel):
@@ -29,5 +30,5 @@ class Review(BaseModel):
     comment: Mapped[Optional[str]] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    product: Mapped["Product"] = relationship(back_populates="reviews")
-    user: Mapped["User"] = relationship(back_populates="reviews")
+    product: Mapped["Product"] = relationship(back_populates="reviews")  # type: ignore
+    user: Mapped["User"] = relationship(back_populates="reviews")  # type: ignore

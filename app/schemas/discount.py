@@ -18,7 +18,18 @@ class DiscountCreate(DiscountBase):
     pass
 
 
+class DiscountUpdate(DiscountBase):
+    pass
+
+
 class DiscountRead(DiscountBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+
+
+class DiscountList(BaseModel):
+    items: List[DiscountRead]
+    total: int
+    page: int
+    per_page: int

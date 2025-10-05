@@ -9,8 +9,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.db import Base
-from app.models.order import Order
-from app.models.user import User
 
 
 class Address(Base):
@@ -24,5 +22,5 @@ class Address(Base):
     postal_code: Mapped[str] = mapped_column(String, nullable=False)
     is_default: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    user: Mapped["User"] = relationship(back_populates="addresses")
-    orders: Mapped[List["Order"]] = relationship(back_populates="address")
+    user: Mapped["User"] = relationship(back_populates="addresses")  # type: ignore
+    orders: Mapped[List["Order"]] = relationship(back_populates="address")  # type: ignore

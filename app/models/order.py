@@ -12,10 +12,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.db import Base
 from app.models.base_model import BaseModel
-from app.models.address import Address
-from app.models.product import Product
-from app.models.shipment import Shipment
-from app.models.user import User
+
+# from app.models.address import Address
+# from app.models.product import Product
+# from app.models.shipment import Shipment
+# from app.models.user import User
 
 
 class OrderStatus(enum.Enum):
@@ -24,28 +25,6 @@ class OrderStatus(enum.Enum):
     shipped = "shipped"
     delivered = "delivered"
     cancelled = "cancelled"
-
-
-class Cart(BaseModel):
-    __tablename__ = "carts"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-
-    items: Mapped[List["CartItem"]] = relationship(back_populates="cart")
-
-
-class CartItem(Base):
-    __tablename__ = "cart_items"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    cart_id: Mapped[int] = mapped_column(ForeignKey("carts.id"))
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
-    quantity: Mapped[int] = mapped_column(Integer, default=1)
-    selected_options: Mapped[Optional[dict]] = mapped_column(JSON)
-
-    cart: Mapped["Cart"] = relationship(back_populates="items")
-    product: Mapped["Product"] = relationship()
 
 
 class Order(BaseModel):
@@ -57,10 +36,10 @@ class Order(BaseModel):
     status: Mapped[OrderStatus] = mapped_column(String, default=OrderStatus.pending)
     total_price: Mapped[float] = mapped_column(Float, default=0)
 
-    user: Mapped["User"] = relationship(back_populates="orders")
-    address: Mapped["Address"] = relationship(back_populates="orders")
+    user: Mapped["User"] = relationship(back_populates="orders")  # type: ignore
+    address: Mapped["Address"] = relationship(back_populates="orders")  # type: ignore
     items: Mapped[List["OrderItem"]] = relationship(back_populates="order")
-    shipment: Mapped["Shipment"] = relationship(back_populates="order", uselist=False)
+    shipment: Mapped["Shipment"] = relationship(back_populates="order", uselist=False)  # type: ignore
 
 
 class OrderItem(Base):
@@ -74,4 +53,4 @@ class OrderItem(Base):
     selected_options: Mapped[Optional[dict]] = mapped_column(JSON)
 
     order: Mapped["Order"] = relationship(back_populates="items")
-    product: Mapped["Product"] = relationship(back_populates="order_items")
+    product: Mapped["Product"] = relationship(back_populates="order_items")  # type: ignore

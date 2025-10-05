@@ -5,7 +5,7 @@ from app.core.exceptions import (
     ForbiddenException,
     NotFoundException,
 )
-from app.models.user import User
+from app.models.user import Role, User
 from app.repositories.user import UserRepository
 from app.schemas.user import (
     UserCreate,
@@ -36,6 +36,9 @@ class UserService:
             "last_name": user_data.last_name,
             "email": user_data.email,
             "hashed_password": hashed_password,
+            "phone": "55555",
+            "role": Role.customer,
+            "is_active": True,
         }
         new_user = await self.user_repo.add_one(new_user_data)
 

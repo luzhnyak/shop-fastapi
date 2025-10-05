@@ -17,7 +17,7 @@ done
 echo "=================== PostgreSQL test is available!"
 
 echo "=================== Running migrations on main database..."
-alembic upgrade head
+# alembic upgrade head
 
 echo "=================== Launching FastAPI..."
-exec python -m app.main
+# exec python -m app.main

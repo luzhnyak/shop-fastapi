@@ -23,6 +23,13 @@ class SignInRequest(BaseModel):
     password: str
 
 
+class SignUpRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    password: str
+
+
 class UserUpdate(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]

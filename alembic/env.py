@@ -7,6 +7,15 @@ from app.db.db import Base
 from app.core.config import settings
 
 from app.models.user import User
+from app.models.address import Address
+from app.models.product import Category
+from app.models.product import Product, ProductImage, ProductOption
+from app.models.cart import Cart, CartItem
+from app.models.order import Order, OrderItem
+from app.models.shipment import Shipment
+from app.models.review import Review
+from app.models.wishlist import Wishlist
+from app.models.custom_order import CustomOrder
 
 
 config = context.config
