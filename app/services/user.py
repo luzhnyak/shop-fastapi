@@ -36,9 +36,6 @@ class UserService:
             "last_name": user_data.last_name,
             "email": user_data.email,
             "hashed_password": hashed_password,
-            "phone": "55555",
-            "role": Role.customer,
-            "is_active": True,
         }
         new_user = await self.user_repo.add_one(new_user_data)
 
@@ -47,7 +44,7 @@ class UserService:
     async def get_users(self, skip: int = 0, limit: int = 10) -> UserList:
         total = await self.user_repo.count_all()
         page = (skip // limit) + 1
-        users = await self.user_repo.find_all(skip=skip, limit=limit)
+        users = await self.user_repo.find_many(skip=skip, limit=limit)
         return UserList(
             items=[UserRead.model_validate(user) for user in users],
             total=total,

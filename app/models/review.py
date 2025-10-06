@@ -16,9 +16,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, declarative_base
 
 from app.models.base_model import BaseModel
 
-# from app.models.product import Product
-# from app.models.user import User
-
 
 class Review(BaseModel):
     __tablename__ = "reviews"

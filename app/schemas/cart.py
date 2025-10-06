@@ -47,8 +47,15 @@ class CartRead(BaseModel):
     items: List[CartItemRead] = []
 
 
+class CartReadMin(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+
+
 class CartList(BaseModel):
-    items: List[CartRead] = []
+    items: List[CartReadMin] = []
     total: int
     page: int
     per_page: int

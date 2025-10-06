@@ -30,7 +30,7 @@ class DiscountService:
     async def get_discounts(self, skip: int = 0, limit: int = 10) -> DiscountList:
         total = await self.discount_repo.count_all()
         page = (skip // limit) + 1
-        discounts = await self.discount_repo.find_all(skip=skip, limit=limit)
+        discounts = await self.discount_repo.find_many(skip=skip, limit=limit)
         return DiscountList(
             items=[DiscountRead.model_validate(d) for d in discounts],
             total=total,

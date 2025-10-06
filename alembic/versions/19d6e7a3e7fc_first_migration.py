@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: 278e69abd954
+Revision ID: 19d6e7a3e7fc
 Revises: 
-Create Date: 2025-10-05 17:57:10.481851
+Create Date: 2025-10-06 13:24:53.779082
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '278e69abd954'
+revision: str = '19d6e7a3e7fc'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -51,7 +51,7 @@ def upgrade() -> None:
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('hashed_password', sa.String(), nullable=False),
     sa.Column('phone', sa.String(), nullable=True),
-    sa.Column('role', sa.String(), nullable=False),
+    sa.Column('role', sa.Enum('admin', 'customer', 'manager', name='role'), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
@@ -125,7 +125,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('address_id', sa.Integer(), nullable=False),
-    sa.Column('status', sa.String(), nullable=False),
+    sa.Column('status', sa.Enum('pending', 'confirmed', 'shipped', 'delivered', 'cancelled', name='orderstatus'), nullable=False),
     sa.Column('total_price', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
@@ -194,7 +194,7 @@ def upgrade() -> None:
     sa.Column('order_id', sa.Integer(), nullable=False),
     sa.Column('provider', sa.String(), nullable=False),
     sa.Column('tracking_number', sa.String(), nullable=True),
-    sa.Column('status', sa.String(), nullable=False),
+    sa.Column('status', sa.Enum('pending', 'shipped', 'delivered', name='shipmentstatus'), nullable=False),
     sa.Column('shipped_at', sa.DateTime(), nullable=True),
     sa.Column('delivered_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['order_id'], ['orders.id'], ),

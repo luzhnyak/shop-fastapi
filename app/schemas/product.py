@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ProductOptionBase(BaseModel):
@@ -39,14 +39,14 @@ class ProductBase(BaseModel):
     name: str
     description: Optional[str] = None
     category_id: int
-    base_price: float
+    base_price: float = 0.0
     sku: Optional[str] = None
     stock_quantity: int = 0
 
 
 class ProductCreate(ProductBase):
-    options: Optional[List[ProductOptionCreate]] = []
-    images: Optional[List[ProductImageCreate]] = []
+    options: Optional[List[ProductOptionCreate]] = Field(default_factory=list)
+    images: Optional[List[ProductImageCreate]] = Field(default_factory=list)
 
 
 class ProductUpdate(BaseModel):
@@ -64,8 +64,8 @@ class ProductRead(ProductBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    options: List[ProductOptionRead] = []
-    images: List[ProductImageRead] = []
+    options: Optional[List[ProductOptionRead]] = Field(default_factory=list)
+    images: Optional[List[ProductImageRead]] = Field(default_factory=list)
 
 
 class ProductList(BaseModel):

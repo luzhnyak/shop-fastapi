@@ -4,6 +4,7 @@ from app.repositories.order import OrderRepository, OrderItemRepository
 
 from app.schemas.order import (
     OrderCreate,
+    OrderReadMin,
     OrderUpdate,
     OrderRead,
     OrderList,
@@ -17,9 +18,13 @@ class OrderService:
         self.order_repo = OrderRepository(db)
         self.order_item_repo = OrderItemRepository(db)
 
-    async def create_order(self, user_id: int, order_data: OrderCreate) -> OrderRead:
+    async def create_order(self, order_data: OrderCreate) -> OrderRead:
         new_order = await self.order_repo.add_one(
-            {"user_id": user_id, "status": "pending"}
+            {
+                "user_id": order_data.user_id,
+                "address_id": order_data.address_id,
+                "status": "pending",
+            }
         )
 
         items = []
@@ -41,24 +46,24 @@ class OrderService:
     async def get_orders(self, skip: int = 0, limit: int = 10) -> OrderList:
         total = await self.order_repo.count_all()
         page = (skip // limit) + 1
-        orders = await self.order_repo.find_all(skip=skip, limit=limit)
+        orders = await self.order_repo.find_many(skip=skip, limit=limit)
         return OrderList(
-            items=[OrderRead.model_validate(o) for o in orders],
+            items=[OrderReadMin.model_validate(o) for o in orders],
             total=total,
             page=page,
             per_page=limit,
         )
 
     async def get_order(self, order_id: int) -> OrderRead:
-        order = await self.order_repo.find_one(id=order_id)
+        order = await self.order_repo.find_one_order(id=order_id)
         if not order:
             raise NotFoundException(f"Order with id {order_id} not found")
 
-        items = await self.order_item_repo.find_all(order_id=order_id)
-        order_dict = OrderRead.model_validate(order).model_dump()
-        order_dict["items"] = [OrderItemRead.model_validate(i) for i in items]
+        # items = await self.order_item_repo.find_all(order_id=order_id)
+        # order_dict = OrderRead.model_validate(order).model_dump()
+        # order_dict["items"] = [OrderItemRead.model_validate(i) for i in items]
 
-        return OrderRead(**order_dict)
+        return OrderRead.model_validate(order)
 
     async def update_order(self, order_id: int, order_data: OrderUpdate) -> OrderRead:
         order = await self.get_order(order_id)

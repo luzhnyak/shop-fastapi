@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Boolean, Integer, String
+from sqlalchemy import Boolean, Enum, Integer, String
 import enum
 
 from app.models.base_model import BaseModel
@@ -20,7 +20,7 @@ class User(BaseModel):
     email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String, nullable=False)
     phone: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    role: Mapped[Role] = mapped_column(String, default=Role.customer)
+    role: Mapped[Role] = mapped_column(Enum(Role), default=Role.customer)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     addresses: Mapped[List["Address"]] = relationship(back_populates="user")  # type: ignore

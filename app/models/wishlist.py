@@ -9,9 +9,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_model import BaseModel
 
-# from app.models.product import Product
-# from app.models.user import User
-
 
 class Wishlist(BaseModel):
     __tablename__ = "wishlists"

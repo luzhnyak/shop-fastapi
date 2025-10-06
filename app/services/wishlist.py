@@ -32,7 +32,7 @@ class WishlistService:
     ) -> WishlistList:
         total = await self.wishlist_repo.count_all(user_id=user_id)
         page = (skip // limit) + 1
-        items = await self.wishlist_repo.find_all(
+        items = await self.wishlist_repo.find_many(
             user_id=user_id, skip=skip, limit=limit
         )
         return WishlistList(

@@ -33,7 +33,7 @@ class ShipmentService:
     async def get_shipments(self, skip: int = 0, limit: int = 10) -> ShipmentList:
         total = await self.shipment_repo.count_all()
         page = (skip // limit) + 1
-        shipments = await self.shipment_repo.find_all(skip=skip, limit=limit)
+        shipments = await self.shipment_repo.find_many(skip=skip, limit=limit)
         return ShipmentList(
             items=[ShipmentRead.model_validate(s) for s in shipments],
             total=total,

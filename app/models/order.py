@@ -2,6 +2,7 @@ import enum
 from typing import List, Optional
 
 from sqlalchemy import (
+    Enum,
     String,
     Integer,
     ForeignKey,
@@ -12,11 +13,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.db import Base
 from app.models.base_model import BaseModel
-
-# from app.models.address import Address
-# from app.models.product import Product
-# from app.models.shipment import Shipment
-# from app.models.user import User
 
 
 class OrderStatus(enum.Enum):
@@ -33,7 +29,9 @@ class Order(BaseModel):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     address_id: Mapped[int] = mapped_column(ForeignKey("addresses.id"))
-    status: Mapped[OrderStatus] = mapped_column(String, default=OrderStatus.pending)
+    status: Mapped[OrderStatus] = mapped_column(
+        Enum(OrderStatus), default=OrderStatus.pending
+    )
     total_price: Mapped[float] = mapped_column(Float, default=0)
 
     user: Mapped["User"] = relationship(back_populates="orders")  # type: ignore

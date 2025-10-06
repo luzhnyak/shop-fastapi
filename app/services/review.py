@@ -41,7 +41,7 @@ class ReviewService:
     async def get_reviews(self, skip: int = 0, limit: int = 10) -> ReviewList:
         total = await self.review_repo.count_all()
         page = (skip // limit) + 1
-        reviews = await self.review_repo.find_all(skip=skip, limit=limit)
+        reviews = await self.review_repo.find_many(skip=skip, limit=limit)
         return ReviewList(
             items=[ReviewRead.model_validate(r) for r in reviews],
             total=total,

@@ -13,10 +13,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.db import Base
 from app.models.base_model import BaseModel
 
-# from app.models.order import OrderItem
-# from app.models.review import Review
-# from app.models.wishlist import Wishlist
-
 
 class Category(Base):
     __tablename__ = "categories"

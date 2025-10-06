@@ -4,9 +4,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.cart import CartRepository, CartItemRepository
 
 from app.schemas.cart import (
+    CartList,
     CartRead,
     CartItemCreate,
     CartItemRead,
+    CartReadMin,
 )
 
 
@@ -16,7 +18,7 @@ class CartService:
         self.cart_item_repo = CartItemRepository(db)
 
     async def get_cart(self, user_id: int) -> CartRead:
-        cart = await self.cart_repo.find_one(user_id=user_id)
+        cart = await self.cart_repo.find_one_cart(user_id=user_id)
         if not cart:
             # якщо кошика ще нема — створюємо
             cart = await self.cart_repo.add_one({"user_id": user_id})
@@ -26,6 +28,17 @@ class CartService:
         cart_dict["items"] = [CartItemRead.model_validate(i) for i in items]
 
         return CartRead(**cart_dict)
+
+    async def get_carts(self, skip: int = 0, limit: int = 10) -> CartList:
+        total = await self.cart_repo.count_all()
+        page = (skip // limit) + 1
+        orders = await self.cart_repo.find_many(skip=skip, limit=limit)
+        return CartList(
+            items=[CartReadMin.model_validate(o) for o in orders],
+            total=total,
+            page=page,
+            per_page=limit,
+        )
 
     async def add_item(self, user_id: int, item_data: CartItemCreate) -> CartRead:
         cart = await self.cart_repo.find_one(user_id=user_id)

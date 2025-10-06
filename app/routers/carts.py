@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 import logging
 
 
-from app.schemas.cart import CartCreate, CartUpdate, CartRead, CartList
+from app.schemas.cart import CartCreate, CartItemCreate, CartUpdate, CartRead, CartList
 
 from app.services.cart import CartService
 from app.utils.deps import get_cart_service
@@ -14,13 +14,15 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/carts", tags=["Carts"])
 
 
-@router.post("/", response_model=CartRead, status_code=status.HTTP_201_CREATED)
-async def create_cart(
-    cart: CartCreate, service: CartService = Depends(get_cart_service)
+@router.post("/{user_id}", response_model=CartRead, status_code=status.HTTP_201_CREATED)
+async def add_item(
+    user_id: int,
+    item_data: CartItemCreate,
+    service: CartService = Depends(get_cart_service),
 ):
-    db_cart = await service.create_cart(cart)
-    logger.info(f"Cart created: {db_cart.id}")
-    return db_cart
+    cart = await service.add_item(user_id, item_data)
+    logger.info(f"Item added to cart: {cart.id}")
+    return cart
 
 
 @router.get("/", response_model=CartList)
@@ -30,9 +32,9 @@ async def get_carts(
     return await service.get_carts(skip, limit)
 
 
-@router.get("/{cart_id}", response_model=CartRead)
-async def get_cart(cart_id: int, service: CartService = Depends(get_cart_service)):
-    cart = await service.get_cart(cart_id)
+@router.get("/{user_id}", response_model=CartRead)
+async def get_cart(user_id: int, service: CartService = Depends(get_cart_service)):
+    cart = await service.get_cart(user_id)
     return cart
 
 

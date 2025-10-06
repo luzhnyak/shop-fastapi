@@ -10,8 +10,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.db import Base
 from app.models.base_model import BaseModel
 
-# from app.models.product import Product
-
 
 class Cart(BaseModel):
     __tablename__ = "carts"

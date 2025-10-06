@@ -17,7 +17,7 @@ class CategoryCreate(CategoryBase):
 class CategoryUpdate(BaseModel):
     name: Optional[str]
     description: Optional[str]
-    parent_id: Optional[int]
+    parent_id: Optional[int] = None
 
 
 class CategoryRead(CategoryBase):

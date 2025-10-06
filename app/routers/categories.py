@@ -32,11 +32,9 @@ async def create_category(
 
 @router.get("/", response_model=List[CategoryRead])
 async def get_categories(
-    skip: int = 0,
-    limit: int = 10,
     service: CategoryService = Depends(get_category_service),
 ):
-    return await service.get_categories(skip, limit)
+    return await service.get_categories()
 
 
 @router.get("/{category_id}", response_model=CategoryRead)
