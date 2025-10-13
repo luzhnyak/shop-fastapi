@@ -12,9 +12,10 @@ from app.repositories.product import (
     ProductRepository,
 )
 from app.schemas.product import ProductCreate, ProductUpdate, ProductRead, ProductList
+from app.services.base import BaseService
 
 
-class ProductService:
+class ProductService(BaseService):
     def __init__(self, db: AsyncSession):
         self.product_repo = ProductRepository(db)
         self.option_repo = ProductOptionRepository(db)
@@ -25,6 +26,10 @@ class ProductService:
         product = await self.product_repo.find_one(name=product_data.name)
         if product:
             raise ConflictException("Product with this name already exists")
+
+        product_data.slug = await self._generate_unique_slug(
+            name=product_data.name, repo=self.product_repo, slug_field="slug"
+        )
 
         new_product = await self.product_repo.add_one(
             product_data.model_dump(exclude={"options", "images"})
@@ -43,10 +48,14 @@ class ProductService:
             )
         return ProductRead.model_validate(new_product)
 
-    async def get_products(self, skip: int = 0, limit: int = 10) -> ProductList:
-        total = await self.product_repo.count_all()
+    async def get_products(
+        self, skip: int = 0, limit: int = 10, **filter_by
+    ) -> ProductList:
+        total = await self.product_repo.count_all(**filter_by)
         page = (skip // limit) + 1
-        products = await self.product_repo.find_many_products(skip=skip, limit=limit)
+        products = await self.product_repo.find_many_products(
+            skip=skip, limit=limit, **filter_by
+        )
         return ProductList(
             items=[ProductRead.model_validate(p) for p in products],
             total=total,

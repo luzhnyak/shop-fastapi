@@ -29,9 +29,20 @@ async def create_product(
 async def get_products(
     skip: int = 0,
     limit: int = 10,
+    category_id: int = None,
+    category: str = None,
     service: ProductService = Depends(get_product_service),
 ):
-    return await service.get_products(skip, limit)
+
+    filters = {
+        k: v
+        for k, v in {
+            "category_id": category_id,
+        }.items()
+        if v is not None
+    }
+
+    return await service.get_products(skip, limit, **filters)
 
 
 @router.get("/{product_id}", response_model=ProductRead)

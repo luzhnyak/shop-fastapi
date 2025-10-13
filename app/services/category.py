@@ -1,4 +1,7 @@
 from typing import List
+import uuid
+
+from slugify import slugify
 from app.core.exceptions import (
     NotFoundException,
     ConflictException,
@@ -10,26 +13,43 @@ from app.repositories.category import CategoryRepository
 
 from app.schemas.category import (
     CategoryCreate,
+    CategoryList,
     CategoryUpdate,
     CategoryRead,
 )
+from app.services.base import BaseService
 
 
-class CategoryService:
+class CategoryService(BaseService):
     def __init__(self, db: AsyncSession):
         self.category_repo = CategoryRepository(db)
 
     async def create_category(self, category_data: CategoryCreate) -> CategoryRead:
-        category = await self.category_repo.find_one(name=category_data.name)
-        if category:
+        existing_category = await self.category_repo.find_one(name=category_data.name)
+        if existing_category:
             raise ConflictException("Category with this name already exists")
+
+        category_data.slug = await self._generate_unique_slug(
+            name=category_data.name, repo=self.category_repo, slug_field="slug"
+        )
 
         new_category = await self.category_repo.add_one(category_data.model_dump())
         return CategoryRead.model_validate(new_category)
 
-    async def get_categories(self) -> List[CategoryRead]:
+    async def get_all_categories(self) -> List[CategoryRead]:
         categories = await self.category_repo.find_all()
         return [CategoryRead.model_validate(c) for c in categories]
+
+    async def get_categories(self, skip: int = 0, limit: int = 10) -> CategoryList:
+        total = await self.category_repo.count_all()
+        page = (skip // limit) + 1
+        categories = await self.category_repo.find_many(skip=skip, limit=limit)
+        return CategoryList(
+            items=[CategoryRead.model_validate(r) for r in categories],
+            total=total,
+            page=page,
+            per_page=limit,
+        )
 
     async def get_category(self, category_id: int) -> CategoryRead:
         category = await self.category_repo.find_one(id=category_id)

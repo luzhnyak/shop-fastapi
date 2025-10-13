@@ -19,6 +19,7 @@ class Category(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
+    slug: Mapped[str] = mapped_column(String, unique=False, nullable=True)
     description: Mapped[Optional[str]] = mapped_column(Text)
     parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("categories.id"))
 
@@ -31,6 +32,7 @@ class Product(BaseModel):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
+    slug: Mapped[str] = mapped_column(String, unique=False, nullable=True)
     description: Mapped[Optional[str]] = mapped_column(Text)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
     base_price: Mapped[float] = mapped_column(Float, nullable=False)

@@ -4,6 +4,7 @@ import logging
 
 from app.schemas.category import (
     CategoryCreate,
+    CategoryList,
     CategoryUpdate,
     CategoryRead,
 )
@@ -30,7 +31,16 @@ async def create_category(
     return db_category
 
 
-@router.get("/", response_model=List[CategoryRead])
+@router.get("/all", response_model=List[CategoryRead])
+async def get_all_categories(
+    skip: int = 0,
+    limit: int = 10,
+    service: CategoryService = Depends(get_category_service),
+):
+    return await service.get_all_categories(skip=skip, limit=limit)
+
+
+@router.get("/", response_model=CategoryList)
 async def get_categories(
     service: CategoryService = Depends(get_category_service),
 ):

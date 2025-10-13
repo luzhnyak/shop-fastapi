@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+import slugify
 
 
 class ProductOptionBase(BaseModel):
@@ -38,6 +39,7 @@ class ProductImageRead(ProductImageBase):
 class ProductBase(BaseModel):
     name: str
     description: Optional[str] = None
+    slug: str | None = None
     category_id: int
     base_price: float = 0.0
     sku: Optional[str] = None

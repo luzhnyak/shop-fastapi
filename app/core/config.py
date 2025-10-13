@@ -31,7 +31,7 @@ class RedisSettings(BaseSettings):
 class AppSettings(BaseSettings):
     HOST: str = "127.0.0.1"
     PORT: int = 8000
-    RELOAD: bool = False
+    RELOAD: bool = True
     SECRET_KEY: str = "secret_key"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
