@@ -6,6 +6,7 @@ from app.core.exceptions import (
 )
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.repositories.category import CategoryRepository
 from app.repositories.product import (
     ProductImageRepository,
     ProductOptionRepository,
@@ -18,6 +19,7 @@ from app.services.base import BaseService
 class ProductService(BaseService):
     def __init__(self, db: AsyncSession):
         self.product_repo = ProductRepository(db)
+        self.category_repo = CategoryRepository(db)
         self.option_repo = ProductOptionRepository(db)
         self.image_repo = ProductImageRepository(db)
 
@@ -51,6 +53,13 @@ class ProductService(BaseService):
     async def get_products(
         self, skip: int = 0, limit: int = 10, **filter_by
     ) -> ProductList:
+        if "category" in filter_by:
+            slug = filter_by.pop("category")
+            category = await self.category_repo.find_one(slug=slug)
+            if not category:
+                raise NotFoundException(f"Category with slug {slug} not found")
+            filter_by["category_id"] = category.id
+
         total = await self.product_repo.count_all(**filter_by)
         page = (skip // limit) + 1
         products = await self.product_repo.find_many_products(

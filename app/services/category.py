@@ -36,9 +36,15 @@ class CategoryService(BaseService):
         new_category = await self.category_repo.add_one(category_data.model_dump())
         return CategoryRead.model_validate(new_category)
 
-    async def get_all_categories(self) -> List[CategoryRead]:
+    async def get_all_categories(self) -> CategoryList:
+        total = await self.category_repo.count_all()
         categories = await self.category_repo.find_all()
-        return [CategoryRead.model_validate(c) for c in categories]
+        return CategoryList(
+            items=[CategoryRead.model_validate(r) for r in categories],
+            total=total,
+            page=1,
+            per_page=total,
+        )
 
     async def get_categories(self, skip: int = 0, limit: int = 10) -> CategoryList:
         total = await self.category_repo.count_all()

@@ -31,20 +31,20 @@ async def create_category(
     return db_category
 
 
-@router.get("/all", response_model=List[CategoryRead])
+@router.get("/all", response_model=CategoryList)
 async def get_all_categories(
-    skip: int = 0,
-    limit: int = 10,
     service: CategoryService = Depends(get_category_service),
 ):
-    return await service.get_all_categories(skip=skip, limit=limit)
+    return await service.get_all_categories()
 
 
 @router.get("/", response_model=CategoryList)
 async def get_categories(
+    skip: int = 0,
+    limit: int = 10,
     service: CategoryService = Depends(get_category_service),
 ):
-    return await service.get_categories()
+    return await service.get_categories(skip=skip, limit=limit)
 
 
 @router.get("/{category_id}", response_model=CategoryRead)

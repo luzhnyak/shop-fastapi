@@ -38,6 +38,7 @@ async def get_products(
         k: v
         for k, v in {
             "category_id": category_id,
+            "category": category,
         }.items()
         if v is not None
     }
