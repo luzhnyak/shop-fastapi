@@ -54,6 +54,14 @@ async def get_product(
     return product
 
 
+@router.get("/slug/{slug}", response_model=ProductRead)
+async def get_product(
+    slug: str, service: ProductService = Depends(get_product_service)
+):
+    product = await service.get_product_by_slug(slug)
+    return product
+
+
 @router.put("/{product_id}", response_model=ProductRead)
 async def update_product(
     product_id: int,

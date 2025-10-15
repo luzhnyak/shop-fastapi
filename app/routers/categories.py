@@ -55,6 +55,14 @@ async def get_category(
     return category
 
 
+@router.get("/slug/{slug}", response_model=CategoryRead)
+async def get_category_by_slug(
+    slug: str, service: CategoryService = Depends(get_category_service)
+):
+    category = await service.get_category_by_slug(slug)
+    return category
+
+
 @router.put("/{category_id}", response_model=CategoryRead)
 async def update_category(
     category_id: int,

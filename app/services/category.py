@@ -63,6 +63,12 @@ class CategoryService(BaseService):
             raise NotFoundException(f"Category with id {category_id} not found")
         return CategoryRead.model_validate(category)
 
+    async def get_category_by_slug(self, slug: str) -> CategoryRead:
+        category = await self.category_repo.find_one(slug=slug)
+        if not category:
+            raise NotFoundException(f"Category with slug {slug} not found")
+        return CategoryRead.model_validate(category)
+
     async def update_category(
         self, category_id: int, category_data: CategoryUpdate
     ) -> CategoryRead:

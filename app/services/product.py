@@ -78,6 +78,12 @@ class ProductService(BaseService):
             raise NotFoundException(f"Product with id {product_id} not found")
         return ProductRead.model_validate(product)
 
+    async def get_product_by_slug(self, slug: str) -> ProductRead:
+        product = await self.product_repo.find_one_product(slug=slug)
+        if not product:
+            raise NotFoundException(f"Product with slug {slug} not found")
+        return ProductRead.model_validate(product)
+
     async def update_product(
         self, product_id: int, product_data: ProductUpdate
     ) -> ProductRead:
