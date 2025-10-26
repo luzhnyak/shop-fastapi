@@ -1,17 +1,9 @@
 from fastapi import APIRouter, Depends, status
-import logging
-
+from logger import logger
 
 from app.schemas.product import ProductCreate, ProductUpdate, ProductRead, ProductList
-from app.services.category import CategoryService
 from app.services.product import ProductService
 from app.utils.deps import get_product_service
-
-router = APIRouter(tags=["Categories", "Products"])
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
@@ -55,7 +47,7 @@ async def get_product(
 
 
 @router.get("/slug/{slug}", response_model=ProductRead)
-async def get_product(
+async def get_product_by_slug(
     slug: str, service: ProductService = Depends(get_product_service)
 ):
     product = await service.get_product_by_slug(slug)

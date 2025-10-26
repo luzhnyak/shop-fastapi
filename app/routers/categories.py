@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, Depends, status
-import logging
+from logger import logger
 
 from app.schemas.category import (
     CategoryCreate,
@@ -12,12 +12,6 @@ from app.schemas.category import (
 from app.services.category import CategoryService
 
 from app.utils.deps import get_category_service
-
-router = APIRouter(tags=["Categories", "Products"])
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
 

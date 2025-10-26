@@ -1,8 +1,8 @@
-"""First migration
+"""Your migration message
 
-Revision ID: 19d6e7a3e7fc
+Revision ID: 24e026bad011
 Revises: 
-Create Date: 2025-10-06 13:24:53.779082
+Create Date: 2025-10-24 14:01:39.805707
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '19d6e7a3e7fc'
+revision: str = '24e026bad011'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,10 +23,13 @@ def upgrade() -> None:
     op.create_table('categories',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('slug', sa.String(), nullable=False),
+    sa.Column('image', sa.String(), nullable=True),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('parent_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['parent_id'], ['categories.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('slug')
     )
     op.create_index(op.f('ix_categories_id'), 'categories', ['id'], unique=False)
     op.create_table('discounts',
@@ -98,6 +101,7 @@ def upgrade() -> None:
     op.create_table('products',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
+    sa.Column('slug', sa.String(), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=False),
     sa.Column('base_price', sa.Float(), nullable=False),
@@ -107,7 +111,8 @@ def upgrade() -> None:
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('sku')
+    sa.UniqueConstraint('sku'),
+    sa.UniqueConstraint('slug')
     )
     op.create_index(op.f('ix_products_id'), 'products', ['id'], unique=False)
     op.create_table('cart_items',

@@ -1,15 +1,10 @@
 from fastapi import APIRouter, Depends, status
-import logging
-
+from logger import logger
 
 from app.schemas.cart import CartCreate, CartItemCreate, CartUpdate, CartRead, CartList
 
 from app.services.cart import CartService
 from app.utils.deps import get_cart_service
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 router = APIRouter(prefix="/carts", tags=["Carts"])
 

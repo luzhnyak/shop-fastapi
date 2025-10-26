@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-import logging
+from logger import logger
 
 from app.schemas.user import UserCreate, UserUpdate, UserRead, UserList
 
@@ -10,9 +10,6 @@ from app.utils.deps import (
 )
 
 router = APIRouter(prefix="/users", tags=["Users"])
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)

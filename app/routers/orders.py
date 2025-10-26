@@ -1,15 +1,11 @@
 from fastapi import APIRouter, Depends, status
-import logging
+from logger import logger
 
 from app.schemas.order import OrderCreate, OrderUpdate, OrderRead, OrderList
 
 from app.services.order import OrderService
 
 from app.utils.deps import get_order_service
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 

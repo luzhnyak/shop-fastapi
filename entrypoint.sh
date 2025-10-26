@@ -20,4 +20,4 @@ echo "=================== Running migrations on main database..."
 # alembic upgrade head
 
 echo "=================== Launching FastAPI..."
-# exec python -m app.main
+exec uvicorn app.main:app --host ${HOST:-0.0.0.0} --port ${PORT:-8000} --reload --reload-delay 0.5 --no-access-log

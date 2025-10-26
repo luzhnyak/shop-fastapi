@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Request, Response
-import logging
+from logger import logger
 
 from app.schemas.user import SignInRequest, SignUpRequest, UserRead
 from app.schemas.auth import Auth0Token, TokenResponse
@@ -8,10 +8,6 @@ from app.utils.deps import get_auth_service, get_current_user
 from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
-
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 @router.post("/register", response_model=TokenResponse)
