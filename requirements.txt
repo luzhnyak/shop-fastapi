@@ -13,3 +13,5 @@ python-jose==3.4.0
 requests==2.32.3
 bcrypt==4.0.1
 python-slugify==8.0.4
+openpyxl==3.1.5
+python-multipart==0.0.20

@@ -42,3 +42,16 @@ class ProductRepository(SQLAlchemyRepository):
         )
         res = await self.session.execute(stmt.offset(skip).limit(limit))
         return res.scalars().all()
+
+    @db_error_handler
+    async def find_all_products(self, **filter_by):
+        stmt = (
+            select(self.model)
+            .options(
+                selectinload(self.model.options),
+                selectinload(self.model.images),
+            )
+            .filter_by(**filter_by)
+        )
+        res = await self.session.execute(stmt)
+        return res.scalars().all()

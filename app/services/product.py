@@ -84,6 +84,12 @@ class ProductService(BaseService):
             raise NotFoundException(f"Product with slug {slug} not found")
         return ProductRead.model_validate(product)
 
+    async def get_product_by_sku(self, sku: str) -> ProductRead:
+        product = await self.product_repo.find_one_product(sku=sku)
+        if not product:
+            return None
+        return ProductRead.model_validate(product)
+
     async def update_product(
         self, product_id: int, product_data: ProductUpdate
     ) -> ProductRead:
@@ -101,3 +107,7 @@ class ProductService(BaseService):
         product = await self.get_product(product_id)
         deleted_product = await self.product_repo.delete_one(product_id)
         return ProductRead.model_validate(deleted_product)
+
+    async def export_products(self, **filter_by) -> List[ProductRead]:
+        products = await self.product_repo.find_all_products(**filter_by)
+        return [ProductRead.model_validate(p) for p in products]

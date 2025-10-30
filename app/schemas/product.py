@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, validator
 import slugify
 
 
@@ -75,3 +75,19 @@ class ProductList(BaseModel):
     total: int
     page: int
     per_page: int
+
+
+class ProductImportRow(BaseModel):
+    sku: str
+    name: str
+    description: Optional[str]
+    category_id: int
+    base_price: float
+    stock_quantity: int
+    image_url: Optional[str]
+
+    @validator("sku", "name")
+    def must_not_be_empty(cls, v):
+        if not v or not str(v).strip():
+            raise ValueError("Поле не може бути порожнім")
+        return v
