@@ -18,6 +18,7 @@ class CartItemRead(CartItemBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    product_name: Optional[str] = None
 
 
 class CartBase(BaseModel):

@@ -23,9 +23,18 @@ class CartService:
             # якщо кошика ще нема — створюємо
             cart = await self.cart_repo.add_one({"user_id": user_id})
 
-        items = await self.cart_item_repo.find_all(cart_id=cart.id)
+        items = await self.cart_item_repo.find_all_with_product(cart_id=cart.id)
+
         cart_dict = CartRead.model_validate(cart).model_dump()
-        cart_dict["items"] = [CartItemRead.model_validate(i) for i in items]
+        cart_dict["items"] = [
+            {
+                "id": item.id,
+                "product_id": item.product_id,
+                "quantity": item.quantity,
+                "product_name": item.product.name,  # ✅ тут доступ до назви
+            }
+            for item in items
+        ]
 
         return CartRead(**cart_dict)
 

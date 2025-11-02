@@ -30,4 +30,4 @@ class CartItem(Base):
     selected_options: Mapped[Optional[dict]] = mapped_column(JSON)
 
     cart: Mapped["Cart"] = relationship(back_populates="items")
-    product: Mapped["Product"] = relationship()  # type: ignore
+    product: Mapped["Product"] = relationship("Product")  # type: ignore
