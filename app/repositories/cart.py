@@ -30,7 +30,9 @@ class CartItemRepository(SQLAlchemyRepository):
     async def find_all_with_product(self, **filter_by):
         stmt = (
             select(self.model)
-            .options(selectinload(self.model.product))
+            .options(
+                selectinload(self.model.product).selectinload(Product.images),
+            )
             .filter_by(**filter_by)
         )
         res = await self.session.execute(stmt)

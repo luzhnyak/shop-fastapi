@@ -31,7 +31,12 @@ class CartService:
                 "id": item.id,
                 "product_id": item.product_id,
                 "quantity": item.quantity,
-                "product_name": item.product.name,  # ✅ тут доступ до назви
+                "price": item.product.base_price,
+                "name": item.product.name,  # ✅ тут доступ до назви
+                "image": next(
+                    (img.image_url for img in item.product.images if img.is_main),
+                    item.product.images[0].image_url if item.product.images else None,
+                ),  # ✅ тут доступ до зображення
             }
             for item in items
         ]
