@@ -54,7 +54,9 @@ class CartService:
             per_page=limit,
         )
 
-    async def add_item(self, user_id: int, item_data: CartItemCreate) -> CartRead:
+    async def add_item_to_cart(
+        self, user_id: int, item_data: CartItemCreate
+    ) -> CartRead:
         cart = await self.cart_repo.find_one(user_id=user_id)
         if not cart:
             cart = await self.cart_repo.add_one({"user_id": user_id})
@@ -80,14 +82,34 @@ class CartService:
 
         return await self.get_cart(user_id)
 
-    async def remove_item(self, user_id: int, product_id: int) -> CartRead:
+    async def update_item_in_cart(
+        self, user_id: int, id: int, item_data: CartItemCreate
+    ) -> CartRead:
         cart = await self.cart_repo.find_one(user_id=user_id)
         if not cart:
             raise NotFoundException("Cart not found")
 
-        item = await self.cart_item_repo.find_one(
-            cart_id=cart.id, product_id=product_id
+        # шукаємо чи вже є такий товар у кошику
+        existing_item = await self.cart_item_repo.find_one(cart_id=cart.id, id=id)
+        if not existing_item:
+            raise NotFoundException("Item not found in cart")
+
+        if item_data.quantity < 1:
+            raise BadRequestException("Quantity should be greater than 0")
+
+        await self.cart_item_repo.edit_one(
+            existing_item.id,
+            {"quantity": item_data.quantity},
         )
+
+        return await self.get_cart(user_id)
+
+    async def delete_item_from_cart(self, user_id: int, id: int) -> CartRead:
+        cart = await self.cart_repo.find_one(user_id=user_id)
+        if not cart:
+            raise NotFoundException("Cart not found")
+
+        item = await self.cart_item_repo.find_one(cart_id=cart.id, id=id)
         if not item:
             raise NotFoundException("Item not found in cart")
 

@@ -14,6 +14,10 @@ class CartItemCreate(CartItemBase):
     pass
 
 
+class CartItemUpdate(BaseModel):
+    quantity: int
+
+
 class CartItemRead(CartItemBase):
     model_config = ConfigDict(from_attributes=True)
 

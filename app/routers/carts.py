@@ -1,23 +1,73 @@
 from fastapi import APIRouter, Depends, status
+from app.schemas.user import UserRead
 from logger import logger
 
-from app.schemas.cart import CartCreate, CartItemCreate, CartUpdate, CartRead, CartList
+from app.schemas.cart import (
+    CartCreate,
+    CartItemCreate,
+    CartItemUpdate,
+    CartUpdate,
+    CartRead,
+    CartList,
+)
 
 from app.services.cart import CartService
-from app.utils.deps import get_cart_service
+from app.utils.deps import get_cart_service, get_current_user
 
 router = APIRouter(prefix="/carts", tags=["Carts"])
 
 
-@router.post("/{user_id}", response_model=CartRead, status_code=status.HTTP_201_CREATED)
-async def add_item(
-    user_id: int,
+@router.get("/my", response_model=CartRead)
+async def get_my_cart(
+    service: CartService = Depends(get_cart_service),
+    current_user: UserRead = Depends(get_current_user),
+):
+    cart = await service.get_cart(current_user.id)
+    return cart
+
+
+@router.post("/my/items", response_model=CartRead)
+async def add_item_to_cart(
     item_data: CartItemCreate,
     service: CartService = Depends(get_cart_service),
+    current_user: UserRead = Depends(get_current_user),
 ):
-    cart = await service.add_item(user_id, item_data)
+    cart = await service.add_item_to_cart(current_user.id, item_data)
     logger.info(f"Item added to cart: {cart.id}")
     return cart
+
+
+@router.patch("/my/items/{id}", response_model=CartRead)
+async def update_item_in_cart(
+    id: int,
+    item_data: CartItemUpdate,
+    service: CartService = Depends(get_cart_service),
+    current_user: UserRead = Depends(get_current_user),
+):
+    cart = await service.update_item_in_cart(current_user.id, id, item_data)
+    logger.info(f"Item updated in cart: {cart.id}")
+    return cart
+
+
+@router.delete("/my/items/{id}", response_model=CartRead)
+async def delete_item_from_cart(
+    id: int,
+    service: CartService = Depends(get_cart_service),
+    current_user: UserRead = Depends(get_current_user),
+):
+    deleted_cart = await service.delete_item_from_cart(current_user.id, id)
+    logger.info(f"Item deleted from cart: {deleted_cart.id}")
+    return deleted_cart
+
+
+@router.delete("/my/clear", response_model=CartRead)
+async def clear_cart(
+    service: CartService = Depends(get_cart_service),
+    current_user: UserRead = Depends(get_current_user),
+):
+    deleted_cart = await service.clear_cart(current_user.id)
+    logger.info(f"Cart cleared: {deleted_cart.id}")
+    return deleted_cart
 
 
 @router.get("/", response_model=CartList)
@@ -25,12 +75,6 @@ async def get_carts(
     skip: int = 0, limit: int = 10, service: CartService = Depends(get_cart_service)
 ):
     return await service.get_carts(skip, limit)
-
-
-@router.get("/{user_id}", response_model=CartRead)
-async def get_cart(user_id: int, service: CartService = Depends(get_cart_service)):
-    cart = await service.get_cart(user_id)
-    return cart
 
 
 @router.put("/{cart_id}", response_model=CartRead)

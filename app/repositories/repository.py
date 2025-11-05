@@ -108,6 +108,16 @@ class SQLAlchemyRepository(AbstractRepository):
         return result._mapping
 
     @db_error_handler
+    async def delete_all(self, **filter_by) -> int:
+        stmt = delete(self.model).filter_by(**filter_by)
+        res = await self.session.execute(stmt)
+        result = res.rowcount
+        if result is None:
+            raise ValueError("No records found to delete")
+
+        return result
+
+    @db_error_handler
     async def count_all(self, **filter_by) -> int:
         stmt = select(func.count()).select_from(self.model).filter_by(**filter_by)
         res = await self.session.execute(stmt)
