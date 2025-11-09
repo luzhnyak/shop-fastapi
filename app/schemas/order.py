@@ -34,11 +34,14 @@ class OrderCreate(OrderBase):
     items: List[OrderItemCreate]
 
 
+class OrderCreateFromCart(BaseModel):
+    address_id: int
+
+
 class OrderUpdate(BaseModel):
     address_id: Optional[int]
     user_id: Optional[int]
     status: Optional[OrderStatus]
-    total_price: Optional[float]
 
 
 class OrderRead(OrderBase):
@@ -52,7 +55,7 @@ class OrderRead(OrderBase):
 
 class OrderReadMin(OrderBase):
     model_config = ConfigDict(from_attributes=True)
-
+    user_name: Optional[str] = None
     id: int
     created_at: datetime
     updated_at: datetime

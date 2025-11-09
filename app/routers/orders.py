@@ -1,13 +1,33 @@
 from fastapi import APIRouter, Depends, status
+from app.schemas.user import UserRead
 from logger import logger
 
-from app.schemas.order import OrderCreate, OrderUpdate, OrderRead, OrderList
+from app.schemas.order import (
+    OrderCreate,
+    OrderCreateFromCart,
+    OrderUpdate,
+    OrderRead,
+    OrderList,
+)
 
 from app.services.order import OrderService
 
-from app.utils.deps import get_order_service
+from app.utils.deps import get_current_user, get_order_service
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
+
+
+@router.post("/checkout", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
+async def create_order_from_cart(
+    order_data: OrderCreateFromCart,
+    service: OrderService = Depends(get_order_service),
+    current_user: UserRead = Depends(get_current_user),
+):
+    order = await service.create_order_from_cart(
+        user_id=current_user.id,
+        address_id=order_data.address_id,
+    )
+    return order
 
 
 @router.post("/", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
